@@ -1,11 +1,13 @@
 {
   "name": "ortho-v2",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "server.js",
+  "type": "module",
   "repository": "https://github.com/svssathvik7/ortho-v2-backend.git",
   "author": "SATHVIK SVS <svssathvik77@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "mongoose": "^8.9.5"
   }
 }
