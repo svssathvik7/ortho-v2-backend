@@ -65,7 +65,14 @@ const patientSchema = new mongoose.Schema({
       notes: String,
       assets: [
         {
-          type: String, // this we need to change later
+          public_id: {
+            type: String,
+            required: true,
+          },
+          url: {
+            type: String,
+            required: true,
+          },
         },
       ],
     },

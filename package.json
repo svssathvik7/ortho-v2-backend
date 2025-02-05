@@ -7,6 +7,7 @@
   "author": "SATHVIK SVS <svssathvik77@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "cloudinary": "^2.5.1",
     "express": "^4.21.2",
     "mongoose": "^8.9.5"
   }
