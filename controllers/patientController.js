@@ -1,4 +1,5 @@
 import { v2 as cloudinary } from "cloudinary";
+import doctorModel from "../models/doctor.models.js";
 
 // Configure Cloudinary
 cloudinary.config({
@@ -61,6 +62,9 @@ export const registerPatient = async (req, res) => {
       })
     );
 
+    // Get the doctor ID from the authenticated user
+    const doctorId = req.user._id; // Assuming authentication middleware sets req.user
+
     // Create new patient document
     const newPatient = await patientModel.create({
       bio,
@@ -73,12 +77,20 @@ export const registerPatient = async (req, res) => {
       diagnosis,
       aoOtaClassification,
       diseaseTags,
-      investigations,
+      investigations: processedInvestigations,
       surgicalProcedure,
       implants,
       complications,
       followUp,
+      doctor: doctorId, // Associate patient with the doctor
     });
+
+    // Add patient to doctor's patients array
+    await doctorModel.findByIdAndUpdate(
+      doctorId,
+      { $push: { patients: newPatient._id } },
+      { new: true }
+    );
 
     return res.status(201).json({
       success: true,

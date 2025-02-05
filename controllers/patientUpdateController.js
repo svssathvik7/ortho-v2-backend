@@ -10,11 +10,18 @@ cloudinary.config({
 });
 
 // Helper function to handle common patient update operations
-const updatePatientField = async (patientId, field, value) => {
+const updatePatientField = async (patientId, doctorId, field, value) => {
   const patient = await patientModel.findById(patientId);
   if (!patient) {
     throw new Error("Patient not found");
   }
+
+  // Check if the patient belongs to the doctor
+  const doctor = await doctorModel.findById(doctorId);
+  if (!doctor || !doctor.patients.includes(patientId)) {
+    throw new Error("Unauthorized: Patient does not belong to this doctor");
+  }
+
   patient[field] = value;
   return await patient.save();
 };
@@ -56,9 +63,11 @@ export const updateComplaints = async (req, res) => {
   try {
     const { patientId } = req.params;
     const { complaints } = req.body;
+    const doctorId = req.user._id; // Assuming authentication middleware sets req.user
 
     const updatedPatient = await updatePatientField(
       patientId,
+      doctorId,
       "complaints",
       complaints
     );
@@ -81,9 +90,11 @@ export const updateIllness = async (req, res) => {
   try {
     const { patientId } = req.params;
     const { illness } = req.body;
+    const doctorId = req.user._id; // Assuming authentication middleware sets req.user
 
     const updatedPatient = await updatePatientField(
       patientId,
+      doctorId,
       "illness",
       illness
     );
@@ -106,9 +117,11 @@ export const updatePastMedicalHistory = async (req, res) => {
   try {
     const { patientId } = req.params;
     const { pastMedicalHistory } = req.body;
+    const doctorId = req.user._id; // Assuming authentication middleware sets req.user
 
     const updatedPatient = await updatePatientField(
       patientId,
+      doctorId,
       "pastMedicalHistory",
       pastMedicalHistory
     );
@@ -131,9 +144,11 @@ export const updateFamilyHistory = async (req, res) => {
   try {
     const { patientId } = req.params;
     const { familyHistory } = req.body;
+    const doctorId = req.user._id; // Assuming authentication middleware sets req.user
 
     const updatedPatient = await updatePatientField(
       patientId,
+      doctorId,
       "familyHistory",
       familyHistory
     );
@@ -156,9 +171,11 @@ export const updatePersonalHistory = async (req, res) => {
   try {
     const { patientId } = req.params;
     const { personalHistory } = req.body;
+    const doctorId = req.user._id; // Assuming authentication middleware sets req.user
 
     const updatedPatient = await updatePatientField(
       patientId,
+      doctorId,
       "personalHistory",
       personalHistory
     );
@@ -181,9 +198,11 @@ export const updateExamination = async (req, res) => {
   try {
     const { patientId } = req.params;
     const { examination } = req.body;
+    const doctorId = req.user._id; // Assuming authentication middleware sets req.user
 
     const updatedPatient = await updatePatientField(
       patientId,
+      doctorId,
       "examination",
       examination
     );
@@ -206,9 +225,11 @@ export const updateDiagnosis = async (req, res) => {
   try {
     const { patientId } = req.params;
     const { diagnosis } = req.body;
+    const doctorId = req.user._id; // Assuming authentication middleware sets req.user
 
     const updatedPatient = await updatePatientField(
       patientId,
+      doctorId,
       "diagnosis",
       diagnosis
     );
@@ -231,9 +252,11 @@ export const updateAoOtaClassification = async (req, res) => {
   try {
     const { patientId } = req.params;
     const { aoOtaClassification } = req.body;
+    const doctorId = req.user._id; // Assuming authentication middleware sets req.user
 
     const updatedPatient = await updatePatientField(
       patientId,
+      doctorId,
       "aoOtaClassification",
       aoOtaClassification
     );
@@ -256,9 +279,11 @@ export const updateDiseaseTags = async (req, res) => {
   try {
     const { patientId } = req.params;
     const { diseaseTags } = req.body;
+    const doctorId = req.user._id; // Assuming authentication middleware sets req.user
 
     const updatedPatient = await updatePatientField(
       patientId,
+      doctorId,
       "diseaseTags",
       diseaseTags
     );
@@ -341,9 +366,11 @@ export const updateSurgicalProcedure = async (req, res) => {
   try {
     const { patientId } = req.params;
     const { surgicalProcedure } = req.body;
+    const doctorId = req.user._id; // Assuming authentication middleware sets req.user
 
     const updatedPatient = await updatePatientField(
       patientId,
+      doctorId,
       "surgicalProcedure",
       surgicalProcedure
     );
@@ -366,9 +393,11 @@ export const updateImplants = async (req, res) => {
   try {
     const { patientId } = req.params;
     const { implants } = req.body;
+    const doctorId = req.user._id; // Assuming authentication middleware sets req.user
 
     const updatedPatient = await updatePatientField(
       patientId,
+      doctorId,
       "implants",
       implants
     );
@@ -391,9 +420,11 @@ export const updateComplications = async (req, res) => {
   try {
     const { patientId } = req.params;
     const { complications } = req.body;
+    const doctorId = req.user._id; // Assuming authentication middleware sets req.user
 
     const updatedPatient = await updatePatientField(
       patientId,
+      doctorId,
       "complications",
       complications
     );
@@ -416,9 +447,11 @@ export const updateFollowUp = async (req, res) => {
   try {
     const { patientId } = req.params;
     const { followUp } = req.body;
+    const doctorId = req.user._id; // Assuming authentication middleware sets req.user
 
     const updatedPatient = await updatePatientField(
       patientId,
+      doctorId,
       "followUp",
       followUp
     );
