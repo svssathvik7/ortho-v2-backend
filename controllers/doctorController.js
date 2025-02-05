@@ -1,5 +1,6 @@
 import doctorModel from "../models/doctor.models.js";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 export const registerDoctor = async (req, res) => {
   try {
@@ -59,6 +60,56 @@ export const registerDoctor = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Something went wrong during registration",
+    });
+  }
+};
+
+export const loginDoctor = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Check if doctor exists
+    const doctor = await doctorModel.findOne({ email });
+    if (!doctor) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid email or password",
+      });
+    }
+
+    // Verify password
+    const isPasswordValid = await bcrypt.compare(password, doctor.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid email or password",
+      });
+    }
+
+    // Generate JWT token
+    const token = jwt.sign(
+      { id: doctor._id, email: doctor.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "24h" }
+    );
+
+    // Remove password from response
+    const doctorResponse = doctor.toObject();
+    delete doctorResponse.password;
+
+    return res.status(200).json({
+      success: true,
+      message: "Login successful",
+      data: {
+        doctor: doctorResponse,
+        token,
+      },
+    });
+  } catch (error) {
+    console.error("Error in doctor login:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong during login",
     });
   }
 };
